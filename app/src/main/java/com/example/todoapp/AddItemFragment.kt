@@ -2,19 +2,14 @@ package com.example.todoapp
 
 import android.app.DatePickerDialog
 import android.os.Bundle
-import android.view.ContextMenu
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
-import android.widget.DatePicker
 import android.widget.PopupMenu
-import android.widget.Toast
 import androidx.fragment.app.Fragment
-import com.example.todoapp.databinding.FragmentAddItemBinding
 import com.example.todoapp.databinding.LaalBinding
 import java.time.LocalDate
-import java.util.Date
 
 
 class AddItemFragment : Fragment() {
@@ -23,12 +18,13 @@ class AddItemFragment : Fragment() {
     private var deadlineDate: String? = null
     val rep = ToDoItemRepository.getInstance()
     var priority = 1
+    var mode: Int? = ADDMODE
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         binding = LaalBinding.inflate(inflater, container, false)
 
 
@@ -49,6 +45,12 @@ class AddItemFragment : Fragment() {
         binding.close.setOnClickListener {
             requireActivity().onBackPressed()
         }
+
+        binding.editText.setText(this.arguments?.getString(TEXT))
+        binding.date.setText(
+            this.arguments?.getString(DEADLINE)
+        )
+        mode = arguments?.getInt(MODE)
 
         return binding.root
     }
@@ -80,18 +82,33 @@ class AddItemFragment : Fragment() {
 
 
     fun saveChanges(priority: Int) {
-        rep.addItem(
-            rep.getItems().size.toString(),
-            binding.editText.text.toString(),
-            priority,
-            deadlineDate
-        )
+        when (mode) {
+            EDITMODE -> {
+                rep.editItem(
+                    this.requireArguments().getInt(POSITION),
+                    binding.editText.text.toString(),
+                    priority,
+                    deadlineDate
+                )
+                Log.i(tag, "edit")
+            }
+
+            else -> {
+                rep.addItem(
+                    rep.getItems().size.toString(),
+                    binding.editText.text.toString(),
+                    priority,
+                    deadlineDate
+                )
+                Log.i(tag, "add")
+            }
+        }
         requireActivity().onBackPressed()
     }
 
 
     private fun openSetDateDialog() {
-        val dialog = DatePickerDialog(
+        DatePickerDialog(
             requireContext(),
             DatePickerDialog.OnDateSetListener { view, year, month, dayOfMonth ->
                 run {
@@ -108,11 +125,31 @@ class AddItemFragment : Fragment() {
 
 
     companion object {
+
+        val MODE: String = "mode"
+        val EDITMODE: Int = 2
+        val ADDMODE: Int = 1
+
+        val PRIORITY: String = "priority_key"
+        val DEADLINE: String = "deadline_key"
+        val TEXT: String = "text_key"
+        val POSITION: String = "position_key"
+
         @JvmStatic
-        fun newInstance(): AddItemFragment {
+        fun newInstance(
+            mode: Int = ADDMODE,
+            text: String? = null,
+            priority: Int = 1,
+            deadlineDate: String? = null,
+            position: Int = -1
+        ): AddItemFragment {
             val fragment = AddItemFragment()
             val args = Bundle().apply {
-
+                putInt(PRIORITY, priority)
+                putString(TEXT, text)
+                putString(DEADLINE, deadlineDate)
+                putInt(MODE, mode)
+                putInt(POSITION, position)
             }
             fragment.arguments = args
             return fragment

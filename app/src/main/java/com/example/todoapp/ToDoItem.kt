@@ -5,8 +5,8 @@ import java.util.Date
 
 data class TodoItem(
     val id: String,
-    val text: String,
-    val priority: Int,
+    var text: String,
+    var priority: Int,
     var flag: Boolean,
     val createDate: String,
     var changeDate: String? = null,

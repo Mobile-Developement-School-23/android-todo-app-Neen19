@@ -1,10 +1,6 @@
 package com.example.todoapp
 
-import android.content.ContentValues.TAG
-import android.icu.util.Calendar
-import android.util.Log
-import org.w3c.dom.Text
-import java.time.DateTimeException
+
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 import java.time.format.FormatStyle
@@ -64,6 +60,17 @@ class ToDoItemRepository {
             )
         )
     }
+
+    fun editItem(position:Int, text: String, priority: Int, deadlineDate: String?) {
+        with (items[position]) {
+            this.text = text
+            this.priority = priority
+            this.deadlineDate = deadlineDate
+        }
+    }
+
+
+
 
     companion object {
         private var instance: ToDoItemRepository? = null

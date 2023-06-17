@@ -1,24 +1,41 @@
 package com.example.todoapp
 
-import android.graphics.Paint
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.CheckBox
 import androidx.recyclerview.widget.RecyclerView
 import com.example.todoapp.databinding.ToDoItemBinding
 
-class ToDoItemAdapter : RecyclerView.Adapter<ToDoItemAdapter.ToDoItemViewHolder>() {
+
+interface itemTouchListener {
+
+    fun onItemTouch(item: TodoItem) {}
+
+    fun checkboxIsCheced(item: TodoItem ) {}
+
+}
+
+
+class ToDoItemAdapter(private val listener: itemTouchListener) :
+    RecyclerView.Adapter<ToDoItemAdapter.ToDoItemViewHolder>(
+    ), View.OnClickListener {
+
+
+    override fun onClick(v: View?) {
+        val item = v?.tag as TodoItem
+        listener.onItemTouch(item)
+    }
 
     var items: List<TodoItem> = ToDoItemRepository.getInstance().getItems()
-        set(newValue) {
-            field = newValue
-            notifyDataSetChanged()
-        }
+
 
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ToDoItemViewHolder {
         val inflater = LayoutInflater.from(parent.context)
         val binding = ToDoItemBinding.inflate(inflater, parent, false)
+        binding.infoIcon.setOnClickListener(this)
+        binding.checkbox.isChecked()
         return ToDoItemViewHolder(binding)
     }
 
@@ -26,6 +43,8 @@ class ToDoItemAdapter : RecyclerView.Adapter<ToDoItemAdapter.ToDoItemViewHolder>
     override fun onBindViewHolder(holder: ToDoItemViewHolder, position: Int) {
         val item = items[position]
         with(holder.binding) {
+            holder.itemView.tag = item
+            infoIcon.tag = item
             task.text = item.text
             if (dateText.text != null) dateText.text = item.deadlineDate.toString()
             else dateText.visibility = View.GONE
