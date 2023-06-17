@@ -10,4 +10,6 @@
     <string name="do_it_till">Do it till</string>
     <string name="no">No</string>
     <string name="priority">Priority</string>
+    <string name="enter_note">enter note</string>
+    <string name="description">Description</string>
 </resources>

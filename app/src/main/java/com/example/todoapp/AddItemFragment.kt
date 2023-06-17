@@ -8,13 +8,13 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.PopupMenu
 import androidx.fragment.app.Fragment
-import com.example.todoapp.databinding.LaalBinding
+import com.example.todoapp.databinding.FragmentAddItemBinding
 import java.time.LocalDate
 
 
 class AddItemFragment : Fragment() {
 
-    lateinit var binding: LaalBinding
+    lateinit var binding: FragmentAddItemBinding
     private var deadlineDate: String? = null
     val rep = ToDoItemRepository.getInstance()
     var priority = 1
@@ -25,7 +25,7 @@ class AddItemFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        binding = LaalBinding.inflate(inflater, container, false)
+        binding = FragmentAddItemBinding.inflate(inflater, container, false)
 
 
         binding.priority.setOnClickListener {

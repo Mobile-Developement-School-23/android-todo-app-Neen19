@@ -35,7 +35,7 @@
             android:layout_height="wrap_content"
             android:textAppearance="?attr/textAppearanceBodyLarge"
             android:textColor="@color/back_dark_primary"
-            android:text="Description"
+            android:text="@string/description"
             android:maxLines="3"
             android:ellipsize="end"/>
 
