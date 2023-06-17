@@ -1,0 +1,13 @@
+<resources>
+    <string name="app_name">todo app</string>
+    <string name="completed_title">Done - %s</string>
+    <string name="main_title">My task</string>
+    <string name="save_item">Save</string>
+    <string name="no_priority">No</string>
+    <string name="low_priority">Low</string>
+    <string name="high_priority"><font fgcolor='#FF453A'>!! High</font></string>
+    <string name="delete">delete</string>
+    <string name="do_it_till">Do it till</string>
+    <string name="no">No</string>
+    <string name="priority">Priority</string>
+</resources>
