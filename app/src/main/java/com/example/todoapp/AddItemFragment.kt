@@ -12,7 +12,6 @@ import com.example.todoapp.databinding.FragmentAddItemBinding
 import java.time.LocalDate
 
 
-@Suppress("DEPRECATION")
 class AddItemFragment : Fragment() {
 
     private lateinit var binding: FragmentAddItemBinding
