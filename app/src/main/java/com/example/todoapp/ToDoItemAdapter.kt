@@ -1,23 +1,22 @@
 package com.example.todoapp
 
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.CheckBox
 import androidx.recyclerview.widget.RecyclerView
 import com.example.todoapp.databinding.ToDoItemBinding
 
 
-interface itemTouchListener {
+interface ItemTouchListener {
 
     fun onItemTouch(item: TodoItem) {}
 
-    fun checkboxIsCheced(item: TodoItem ) {}
 
 }
 
 
-class ToDoItemAdapter(private val listener: itemTouchListener) :
+class ToDoItemAdapter(private val listener: ItemTouchListener) :
     RecyclerView.Adapter<ToDoItemAdapter.ToDoItemViewHolder>(
     ), View.OnClickListener {
 
@@ -25,17 +24,16 @@ class ToDoItemAdapter(private val listener: itemTouchListener) :
     override fun onClick(v: View?) {
         val item = v?.tag as TodoItem
         listener.onItemTouch(item)
+        notifyDataSetChanged()
     }
 
     var items: List<TodoItem> = ToDoItemRepository.getInstance().getItems()
-
 
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ToDoItemViewHolder {
         val inflater = LayoutInflater.from(parent.context)
         val binding = ToDoItemBinding.inflate(inflater, parent, false)
         binding.infoIcon.setOnClickListener(this)
-        binding.checkbox.isChecked()
         return ToDoItemViewHolder(binding)
     }
 
@@ -46,8 +44,13 @@ class ToDoItemAdapter(private val listener: itemTouchListener) :
             holder.itemView.tag = item
             infoIcon.tag = item
             task.text = item.text
-            if (dateText.text != null) dateText.text = item.deadlineDate.toString()
-            else dateText.visibility = View.GONE
+            Log.i("tag", item.deadlineDate.toString())
+            if (item.deadlineDate != null) {
+                dateText.visibility = View.VISIBLE
+                dateText.text = item.deadlineDate.toString()
+            } else {
+                dateText.visibility = View.GONE
+            }
             checkbox.isChecked = item.flag == true
 
             when (item.priority) {

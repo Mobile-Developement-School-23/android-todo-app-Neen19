@@ -12,4 +12,7 @@
     <string name="priority">Priority</string>
     <string name="enter_note">enter note</string>
     <string name="description">Description</string>
+    <string name="close_this_fragment">close this fragment</string>
+    <string name="task">task</string>
+    <string name="info">info</string>
 </resources>

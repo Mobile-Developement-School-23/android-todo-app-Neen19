@@ -12,13 +12,14 @@ import com.example.todoapp.databinding.FragmentAddItemBinding
 import java.time.LocalDate
 
 
+@Suppress("DEPRECATION")
 class AddItemFragment : Fragment() {
 
-    lateinit var binding: FragmentAddItemBinding
+    private lateinit var binding: FragmentAddItemBinding
     private var deadlineDate: String? = null
-    val rep = ToDoItemRepository.getInstance()
-    var priority = 1
-    var mode: Int? = ADDMODE
+    private val rep = ToDoItemRepository.getInstance()
+    private var priority = 1
+    private var mode: Int? = ADDMODE
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -43,13 +44,14 @@ class AddItemFragment : Fragment() {
         }
 
         binding.close.setOnClickListener {
-            requireActivity().onBackPressed()
+            val fragmentRecycler = RecyclerViewFragment.newInstance()
+            requireActivity().supportFragmentManager.beginTransaction()
+                .add(R.id.fragment_add_item, fragmentRecycler)
+                .commit()
         }
 
         binding.editText.setText(this.arguments?.getString(TEXT))
-        binding.date.setText(
-            this.arguments?.getString(DEADLINE)
-        )
+        binding.date.text = this.arguments?.getString(DEADLINE)
         mode = arguments?.getInt(MODE)
 
         return binding.root
@@ -81,7 +83,7 @@ class AddItemFragment : Fragment() {
     }
 
 
-    fun saveChanges(priority: Int) {
+    private fun saveChanges(priority: Int) {
         when (mode) {
             EDITMODE -> {
                 rep.editItem(
@@ -103,14 +105,17 @@ class AddItemFragment : Fragment() {
                 Log.i(tag, "add")
             }
         }
-        requireActivity().onBackPressed()
+        val fragmentRecycler = RecyclerViewFragment.newInstance()
+        requireActivity().supportFragmentManager.beginTransaction()
+            .add(R.id.fragment_add_item, fragmentRecycler)
+            .commit()
     }
 
 
     private fun openSetDateDialog() {
         DatePickerDialog(
             requireContext(),
-            DatePickerDialog.OnDateSetListener { view, year, month, dayOfMonth ->
+            { _, year, month, dayOfMonth ->
                 run {
                     binding.date.text = LocalDate.of(year, month, dayOfMonth).toStringDate()
                     deadlineDate = LocalDate.of(year, month, dayOfMonth).toStringDate()
@@ -126,14 +131,14 @@ class AddItemFragment : Fragment() {
 
     companion object {
 
-        val MODE: String = "mode"
-        val EDITMODE: Int = 2
-        val ADDMODE: Int = 1
+        const val MODE: String = "mode"
+        const val EDITMODE: Int = 2
+        const val ADDMODE: Int = 1
 
-        val PRIORITY: String = "priority_key"
-        val DEADLINE: String = "deadline_key"
-        val TEXT: String = "text_key"
-        val POSITION: String = "position_key"
+        private const val PRIORITY: String = "priority_key"
+        const val DEADLINE: String = "deadline_key"
+        const val TEXT: String = "text_key"
+        const val POSITION: String = "position_key"
 
         @JvmStatic
         fun newInstance(

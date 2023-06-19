@@ -1,11 +1,9 @@
 package com.example.todoapp
 
 
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.view.View
+import androidx.appcompat.app.AppCompatActivity
 import com.example.todoapp.databinding.ActivityMainBinding
-import com.example.todoapp.databinding.FragmentAddItemBinding
 
 class MainActivity : AppCompatActivity() {
 
@@ -19,25 +17,12 @@ class MainActivity : AppCompatActivity() {
 
         if (savedInstanceState == null) {
             val fragmentRecycler = RecyclerViewFragment.newInstance()
-            supportFragmentManager
-                .beginTransaction()
-                .add(R.id.fragment_recycler_view, fragmentRecycler)
-                .commit()
-        }
-
-
-        binding.fab.setOnClickListener {
-            val fragmentAddItem = AddItemFragment.newInstance()
-            supportFragmentManager
-                .beginTransaction()
-                .addToBackStack(null)
-                .replace(R.id.fragment_add_item,fragmentAddItem)
+            supportFragmentManager.beginTransaction().add(R.id.fragment_add_item, fragmentRecycler)
                 .commit()
         }
 
 
     }
-
 
 
 }

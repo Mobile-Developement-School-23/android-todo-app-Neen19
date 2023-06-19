@@ -25,14 +25,12 @@ class ToDoItemRepository {
                     i % 3,
                     (i % 2 == 0),
                     LocalDate.now().toStringDate(),
+                    deadlineDate = if( i % 2 == 0) LocalDate.now().toStringDate() else null
                 )
             )
         }
     }
 
-    fun deleteItem(item: TodoItem) {
-        items.remove(item)
-    }
 
     fun getItems(): List<TodoItem> {
         return items
@@ -40,9 +38,9 @@ class ToDoItemRepository {
 
 
     fun getDoneCount(): Int {
-        var count: Int = 0
+        var count = 0
         for (i in items) {
-            if (i.flag == true) count++
+            if (i.flag) count++
         }
         return count
     }
@@ -61,15 +59,13 @@ class ToDoItemRepository {
         )
     }
 
-    fun editItem(position:Int, text: String, priority: Int, deadlineDate: String?) {
-        with (items[position]) {
+    fun editItem(position: Int, text: String, priority: Int, deadlineDate: String?) {
+        with(items[position]) {
             this.text = text
             this.priority = priority
             this.deadlineDate = deadlineDate
         }
     }
-
-
 
 
     companion object {

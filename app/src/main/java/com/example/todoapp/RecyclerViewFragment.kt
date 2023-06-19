@@ -17,10 +17,19 @@ class RecyclerViewFragment : Fragment() {
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         binding = FragmentRecyclerViewBinding.inflate(inflater, container, false)
         binding.recyclerView.layoutManager = LinearLayoutManager(requireContext())
-        val adapter = ToDoItemAdapter(object : itemTouchListener {
+        binding.fab.setOnClickListener {
+            val fragmentAddItem = AddItemFragment.newInstance()
+            requireActivity().supportFragmentManager
+                .beginTransaction()
+                .addToBackStack(null)
+                .replace(R.id.fragment_add_item, fragmentAddItem)
+                .commit()
+        }
+        val adapter = ToDoItemAdapter(object : ItemTouchListener {
+
 
             override fun onItemTouch(item: TodoItem) {
                 val fragmentAddItem =
@@ -30,6 +39,7 @@ class RecyclerViewFragment : Fragment() {
                         item.priority,
                         item.deadlineDate,
                         item.id.toInt()
+
                     )
                 requireActivity().supportFragmentManager
                     .beginTransaction()
@@ -38,11 +48,6 @@ class RecyclerViewFragment : Fragment() {
                     .commit()
             }
 
-            override fun checkboxIsCheced(item: TodoItem) {
-                val done = requireActivity().findViewById<TextView>(R.id.Done)
-                done.text =
-                    getString(R.string.completed_title) + ToDoItemRepository.getInstance().getDoneCount()
-            }
 
         })
         adapter.items = ToDoItemRepository.getInstance().getItems()
@@ -53,8 +58,9 @@ class RecyclerViewFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         val done = requireActivity().findViewById<TextView>(R.id.Done)
-        done.text =
+        val text =
             getString(R.string.completed_title) + ToDoItemRepository.getInstance().getDoneCount()
+        done.text = text
     }
 
 
