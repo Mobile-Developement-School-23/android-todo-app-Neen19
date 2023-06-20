@@ -10,6 +10,12 @@ fun LocalDate.toStringDate(): String =
     DateTimeFormatter.ofLocalizedDate(FormatStyle.LONG).format(this)
 
 
+enum class Priority {
+    HIGH_PRIORITY,
+    NO_PRIORITY,
+    LOW_PRIORITY,
+}
+
 class ToDoItemRepository {
 
 
@@ -22,14 +28,23 @@ class ToDoItemRepository {
                 TodoItem(
                     i.toString(),
                     "Some to do text $i",
-                    i % 3,
+                    when (i % 3) {
+                        0 -> Priority.LOW_PRIORITY
+                        1 -> Priority.NO_PRIORITY
+                        else -> Priority.HIGH_PRIORITY
+                    },
                     (i % 2 == 0),
                     LocalDate.now().toStringDate(),
-                    deadlineDate = if( i % 2 == 0) LocalDate.now().toStringDate() else null
+                    deadlineDate = if (i % 2 == 0) LocalDate.now().toStringDate() else null
                 )
             )
         }
     }
+
+
+//    fun deleteItem(position: Int) {
+//        if (position != -1) items.removeAt(position)
+//    }
 
 
     fun getItems(): List<TodoItem> {
@@ -45,7 +60,7 @@ class ToDoItemRepository {
         return count
     }
 
-    fun addItem(id: String, text: String, priority: Int, deadlineDate: String?) {
+    fun addItem(id: String, text: String, priority: Priority, deadlineDate: String?) {
         items.add(
             TodoItem(
                 id,
@@ -59,7 +74,7 @@ class ToDoItemRepository {
         )
     }
 
-    fun editItem(position: Int, text: String, priority: Int, deadlineDate: String?) {
+    fun editItem(position: Int, text: String, priority: Priority, deadlineDate: String?) {
         with(items[position]) {
             this.text = text
             this.priority = priority

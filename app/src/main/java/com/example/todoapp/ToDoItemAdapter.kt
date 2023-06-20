@@ -16,6 +16,8 @@ interface ItemTouchListener {
 }
 
 
+
+
 class ToDoItemAdapter(private val listener: ItemTouchListener) :
     RecyclerView.Adapter<ToDoItemAdapter.ToDoItemViewHolder>(
     ), View.OnClickListener {
@@ -27,7 +29,12 @@ class ToDoItemAdapter(private val listener: ItemTouchListener) :
         notifyDataSetChanged()
     }
 
+
     var items: List<TodoItem> = ToDoItemRepository.getInstance().getItems()
+        set(value) {
+            field = value
+            notifyDataSetChanged()
+        }
 
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ToDoItemViewHolder {
@@ -54,12 +61,12 @@ class ToDoItemAdapter(private val listener: ItemTouchListener) :
             checkbox.isChecked = item.flag == true
 
             when (item.priority) {
-                0 -> {
+                Priority.LOW_PRIORITY -> {
                     priority.visibility = View.VISIBLE
                     priority.setImageResource(R.drawable.low_priority)
                 }
 
-                2 -> {
+                Priority.HIGH_PRIORITY -> {
                     priority.setImageResource(R.drawable.high_priority)
                     priority.visibility = View.VISIBLE
                 }
@@ -75,6 +82,8 @@ class ToDoItemAdapter(private val listener: ItemTouchListener) :
     override fun getItemCount(): Int {
         return items.size
     }
+
+
 
 
     class ToDoItemViewHolder(

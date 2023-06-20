@@ -2,10 +2,10 @@ package com.example.todoapp
 
 import android.app.DatePickerDialog
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN
 import android.widget.PopupMenu
 import androidx.fragment.app.Fragment
 import com.example.todoapp.databinding.FragmentAddItemBinding
@@ -17,7 +17,7 @@ class AddItemFragment : Fragment() {
     private lateinit var binding: FragmentAddItemBinding
     private var deadlineDate: String? = null
     private val rep = ToDoItemRepository.getInstance()
-    private var priority = 1
+    private var priority = Priority.NO_PRIORITY
     private var mode: Int? = ADDMODE
 
     override fun onCreateView(
@@ -43,11 +43,12 @@ class AddItemFragment : Fragment() {
         }
 
         binding.close.setOnClickListener {
-            val fragmentRecycler = RecyclerViewFragment.newInstance()
-            requireActivity().supportFragmentManager.beginTransaction()
-                .add(R.id.fragment_add_item, fragmentRecycler)
-                .commit()
+            openRecyclerFragment()
         }
+
+//        binding.deleteButton.setOnClickListener {
+//            deleteItem(this.requireArguments().getInt(POSITION))
+//        }
 
         binding.editText.setText(this.arguments?.getString(TEXT))
         binding.date.text = this.arguments?.getString(DEADLINE)
@@ -63,17 +64,20 @@ class AddItemFragment : Fragment() {
         popupMenu.setOnMenuItemClickListener {
             when (it.itemId) {
                 R.id.low_priority -> {
-                    priority = 0
+                    priority = Priority.LOW_PRIORITY
+                    binding.priority.text = getString(R.string.low_priority)
                     true
                 }
 
                 R.id.high_priority -> {
-                    priority = 2
+                    priority = Priority.HIGH_PRIORITY
+                    binding.priority.text = getString(R.string.high_priority)
                     true
                 }
 
                 else -> {
-                    priority = 1
+                    priority = Priority.NO_PRIORITY
+                    binding.priority.text = getString(R.string.no_priority)
                     true
                 }
             }
@@ -82,7 +86,7 @@ class AddItemFragment : Fragment() {
     }
 
 
-    private fun saveChanges(priority: Int) {
+    private fun saveChanges(priority: Priority) {
         when (mode) {
             EDITMODE -> {
                 rep.editItem(
@@ -91,7 +95,6 @@ class AddItemFragment : Fragment() {
                     priority,
                     deadlineDate
                 )
-                Log.i(tag, "edit")
             }
 
             else -> {
@@ -101,15 +104,20 @@ class AddItemFragment : Fragment() {
                     priority,
                     deadlineDate
                 )
-                Log.i(tag, "add")
             }
         }
-        val fragmentRecycler = RecyclerViewFragment.newInstance()
-        requireActivity().supportFragmentManager.beginTransaction()
-            .add(R.id.fragment_add_item, fragmentRecycler)
-            .commit()
+        openRecyclerFragment()
     }
 
+
+//    private fun deleteItem(position: Int) {
+//        if (mode == EDITMODE) {
+//            openRecyclerFragment(position)
+//        } else {
+//            openRecyclerFragment()
+//        }
+//
+//    }
 
     private fun openSetDateDialog() {
         DatePickerDialog(
@@ -125,6 +133,14 @@ class AddItemFragment : Fragment() {
             15
         ).show()
 
+    }
+
+
+    private fun openRecyclerFragment(position: Int = -1) {
+        val fragmentRecycler = RecyclerViewFragment.newInstance(position)
+        requireActivity().supportFragmentManager.beginTransaction()
+            .add(R.id.fragment_add_item, fragmentRecycler)
+            .commit()
     }
 
 

@@ -28,6 +28,7 @@ class RecyclerViewFragment : Fragment() {
                 .replace(R.id.fragment_add_item, fragmentAddItem)
                 .commit()
         }
+
         val adapter = ToDoItemAdapter(object : ItemTouchListener {
 
 
@@ -36,7 +37,11 @@ class RecyclerViewFragment : Fragment() {
                     AddItemFragment.newInstance(
                         AddItemFragment.EDITMODE,
                         item.text,
-                        item.priority,
+                        when (item.priority) {
+                            Priority.LOW_PRIORITY -> 0
+                            Priority.NO_PRIORITY -> 1
+                            Priority.HIGH_PRIORITY -> 2
+                        },
                         item.deadlineDate,
                         item.id.toInt()
 
@@ -48,8 +53,8 @@ class RecyclerViewFragment : Fragment() {
                     .commit()
             }
 
-
         })
+//        ToDoItemRepository.getInstance().deleteItem(positionFromEdit)
         adapter.items = ToDoItemRepository.getInstance().getItems()
         binding.recyclerView.adapter = adapter
         return binding.root
@@ -65,9 +70,17 @@ class RecyclerViewFragment : Fragment() {
 
 
     companion object {
+
+        private const val POSITION: String = "position_key"
+
         @JvmStatic
-        fun newInstance(): RecyclerViewFragment {
-            return RecyclerViewFragment()
+        fun newInstance(position: Int = -1): RecyclerViewFragment {
+            val fragment = RecyclerViewFragment()
+            val args = Bundle().apply {
+                putInt(POSITION, position)
+            }
+            fragment.arguments = args
+            return fragment
         }
     }
 
